@@ -1,0 +1,4 @@
+Compile to object file:
+$ gcc -Wall -c -I../core enq.c
+
+NOTE: Ensure that core module has been compiled to object code as well.

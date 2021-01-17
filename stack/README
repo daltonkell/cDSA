@@ -1,0 +1,35 @@
+STACK Implementation
+--------------------
+
+Stacks are magically simple, useful data structures. They can be used
+to easily maintain order and facilitate recursive algorithms.
+
+Often, stacks will be referred to as a LIFO queue (Last-in, first-out).
+Items can be pushed onto the stack, but must be retrieved in the reverse
+order in which they are pushed. The retrieval is known as a pop.
+
+This module will consist of a basic stack implementation:
+  - create a stack
+  - push an item onto the stack
+  - pop an item off the stack
+  - peek at a stack, looking at the last item on the stack w/o removing
+  - test if stack is empty
+  - test if stack is full
+  - clear a stack
+  - destroy a stack
+
+These methods enable us to create a stack which is contiguous in
+memory addresses - each spot in the stack is just one more than
+the previous, as we use calloc() to allocate the space. However,
+stacks need not be contiguous; then can instead be segmented across
+available memory using pointers to link them together. This has
+significant advantage, namely that it yields considerable flexibility
+for how space is allocated. Moreover, these details can be hidden
+from the user so that the user knows no difference!
+
+A few more robust methods are also added:
+  - marking the stack
+  - index into the stack from a mark
+  - clear the stack to a mark
+  - grab stack space
+  - create a segmented stack

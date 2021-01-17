@@ -1,0 +1,3 @@
+Compile to object file:
+
+$ gcc -Wall -c cda.c

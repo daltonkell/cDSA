@@ -1,0 +1,30 @@
+Array Implementation of LIST
+============================
+
+A list is an extremely common data structure. In C, it is an abstract data type.
+In a list, all elements are of the same size, as they are all the same type.
+
+A colloquial definition: a list is a sequence of some type T.
+
+The operations which may be performed on the list are:
+  - creating the list
+  - determine if list is empty
+  - determine if list is full
+  - get the size of the list
+  - add a new entry to the end of the list
+  - traverse the list (and perform an operation on each element)
+  - clear the list
+  - destroy the list (not strictly required, but it's a good idea)
+
+While implementing a list as an array, we'll need to define the maximum size of
+the list (it will not be allocated dynamically). We'll be allocating a block of
+memory suitable to hold some maximum number of elements of a fixed size. We thus
+need a control structure to contain:
+  - pointer to the array
+  - the array size
+  - the element size
+  - index of next element
+  - copy of list name (pointer to char)
+  - entry pointer
+
+See the listp.h for the declaration of this structure.
