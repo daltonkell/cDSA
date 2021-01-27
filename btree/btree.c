@@ -106,14 +106,90 @@ CDA_BOOL_t BTREE_is_node_leaf(BTREE_NODE_ID_t node)
     return (node->left != NULL || node->right != NULL) ? CDA_FALSE : CDA_TRUE;
 }
 
-/* TODO *********************************
- * Traverse a tree
+/* Tree traversal **********
+ * NOTE that BTREE__traverse_inorder, BTREE__traverse_preorder,
+ * and BTREE__traverse_postorder are private functions declared
+ * in btreep.h
+ */
+
+void BTREE__traverse_inorder(
+    BTREE_NODE_ID_t node,
+    BTREE_VISIT_PROC_p_t visit_proc)
+{
+    if (node != NULL)
+    {
+        /* first, visit the left child */
+        BTREE__traverse_inorder(node->left, visit_proc);
+
+        /* visit the node */
+        visit_proc(node->data);
+
+        /* visit the right child */
+        BTREE__traverse_inorder(node->right, visit_proc);
+    }
+}
+
+void BTREE__traverse_preorder(
+    BTREE_NODE_ID_t node,
+    BTREE_VISIT_PROC_p_t visit_proc)
+{
+    if (node != NULL)
+    {
+        /* first, visit the node */
+        visit_proc(node->data);
+
+        /* recursively visit left, then right */
+        BTREE__traverse_preorder(node->left, visit_proc);
+        BTREE__traverse_preorder(node->right, visit_proc);
+    }
+}
+
+void BTREE__traverse_postorder(
+    BTREE_NODE_ID_t node,
+    BTREE_VISIT_PROC_p_t visit_proc)
+{
+    /* all children of node are visited before the node */
+    if (node != NULL)
+    {
+        BTREE__traverse_postorder(node->left, visit_proc);
+        BTREE__traverse_postorder(node->right, visit_proc);
+        visit_proc(node->data);
+    }
+}
+
+/* Traverse a tree
+ * This is the implementation of the public method
+ */
 void BTREE_traverse_tree(
     BTREE_ID_t tree,
     BTREE_TRAVERSE_ORDER_e_t order,
-    BTREE_TRAVERSE_PROC_p_t traverse_proc
-);
- */
+    BTREE_VISIT_PROC_p_t visit_proc
+)
+{
+    switch(order)
+    {
+        case BTREE_PREORDER:
+        {
+            BTREE__traverse_preorder(tree->root, visit_proc);
+            break;
+        }
+        case BTREE_INORDER:
+        {
+            BTREE__traverse_inorder(tree->root, visit_proc);
+            break;
+        }
+        case BTREE_POSTORDER:
+        {
+            BTREE__traverse_postorder(tree->root, visit_proc);
+            break;
+        }
+        default:
+        {
+            CDA_ASSERT(CDA_FALSE);
+            break;
+        }
+    }
+}
 
 /* Destroy a subtree
  * Recursive procedure, destroying all left children,
@@ -146,7 +222,26 @@ BTREE_NODE_ID_t BTREE_destroy_subtree(
         destroy_proc(node->data);
     }
 
-    /* TODO */
+    /* whichever node this is, set ptr to it to NULL */
+    if (node == node->tree->root)
+    {
+        node->tree->root = NULL;
+    }
+    else if (node == node->parent->left)
+    {
+        node->parent->left = NULL;
+    }
+    else if (node == node->parent->right)
+    {
+        node->parent->right = NULL;
+    }
+    else
+    {   /* Something bad happened */
+        CDA_ASSERT(CDA_FALSE);
+    }
+
+    CDA_free(node);
+    return BTREE_NULL_NODE_ID;
 }
 
 /* Destroy tree */

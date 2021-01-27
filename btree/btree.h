@@ -41,7 +41,7 @@ typedef enum btree_traverse_order_e
   - get a node's right child
   - check if tree is empty
   - check if node is a leaf
-  - traverse a binary tree              TODO
+  - traverse a binary tree
   - destroy subtree
   - destroy a binary tree
 */
