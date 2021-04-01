@@ -1,0 +1,89 @@
+MERGESORT
+=========
+
+Recursively divide a data structure in half, sort each half independently,
+then merge the results back. Data structure needs to be split, so this lends
+itself to contiguous data structures like arrays.
+
+---------------------------------------------------------------------
+PSEUDOCODE
+---------------------------------------------------------------------
+
+mergesort( array, num_ele ):
+    if num_ele > 1:
+        lower_half  = num_ele / 2
+        upper_half  = num_ele - lower_half
+        array2      = array + lower_half   // array is a pointer
+
+        // recursion calls
+        mergesort( array, lower_half )
+        mergesort( array2, upper_half )
+
+        // when the halves have been sorted, put results into
+        // a temporary array, then copy that array into the
+        // original array
+
+        // positions i, j, k for array indices
+        i = j = k = 0
+
+        // pick from each half the lower value, then increment the
+        // indices used
+        while ( i < lower_half && j < upper_half )
+            if ( array[i] < array2[j] )
+                temp_array[k] = array[i]
+                ++k
+                ++i
+            else
+                temp_array[k] = array2[j]
+                ++k
+                ++j
+
+        // once the lower values have been exhausted
+        while ( i < lower_half )
+            temp_array[k] = array[i]
+            ++k
+            ++i
+
+        while ( jnx < higher_half )
+            temp_array[k] = array2[j]
+            ++k
+            ++j
+
+        // copy the elements back into the original array
+        for ( i=0; i<num_ele; ++i )
+            array[i] = temp_array[i]
+---------------------------------------------------------------------
+
+NOTES
+---------------------------------------------------------------------
+
+ - We want the function to be able to sort an array of any type - thus,
+   we should make array parameter the type of void*.
+ - When we start adding to the array indices, we need to do pointer arithmetic
+   because the compiler can't do it when the array is of type void.
+   So, the function signature should also be passed the size of each
+   element so we can correctly do the pointer arithmetic
+
+   The signature will look something like
+
+       void mergesort(void *array, size_t num_ele, size_t ele_size);
+
+ - temporary array assignment is slightly more difficult than the
+   trivial tmp[i] = array[i] because, yet again, the compiler does
+   not know what the size of each element is, and therefore cannot
+   trivially copy the element from one address to the other; for
+   such an issue, we can use the standard memory operation `memcpy`
+
+---------------------------------------------------------------------
+A recursive stack-based implementation
+---------------------------------------------------------------------
+
+Instead of using a third dynamically allocated array to keep our
+sorted elements, we can use the stack data structure instead. The
+stack module we have implemented (STK) requires that its elements be
+*void, so we'll have to pass **void to the mergesort function.
+
+Instead of using memcpy() to store our dynamically allocated, sorted
+array, which requires some tricky pointer arithmetic, the stack will
+hold each element. We'll be able to simply push and pop from the stack
+to get our sorted array.
